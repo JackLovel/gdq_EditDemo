@@ -183,6 +183,9 @@ void Widget::getNextParagraph() {
     convertToVector(content);
     setDisplayContent(fonts);
 
+    ui->textEditInput->clear();
+    ui->textEditInput->setReadOnly(false);
+
     sendArticleStatus();
 }
 
