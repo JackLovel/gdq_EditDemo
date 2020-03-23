@@ -110,7 +110,6 @@ void Widget::setDisplayContent(QVector<RichTextFont*> fonts) {
 
 void Widget::LogInput()
 {
-
     canTimer = true;
     QString content = ui->textEditInput->toPlainText();
     qint32 wordSize = content.size();
@@ -183,8 +182,8 @@ void Widget::getNextParagraph() {
     convertToVector(content);
     setDisplayContent(fonts);
 
-    ui->textEditInput->clear();
     ui->textEditInput->setReadOnly(false);
+    ui->textEditInput->clear();
 
     sendArticleStatus();
 }
