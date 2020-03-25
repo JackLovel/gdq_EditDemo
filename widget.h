@@ -6,6 +6,7 @@
 #include "sendarticedialog.h"
 #include "Config.h"
 #include "util.h"
+#include "aboutdialog.h"
 
 #include <QWidget>
 #include <QObject>
@@ -57,6 +58,7 @@ private slots:
 private:
     Ui::Widget *ui;
     SendArticeDialog *sendDialog;
+    AboutDialog *aboutDialog;
 
     qint32 storeIndex; // 用于存放 输入 时的索引
     bool revision; // 输入框 是否回改
@@ -82,6 +84,9 @@ private:
 
     /***菜单***/
     QMenu *sendFileMenu;
+    QMenu *helpMenu;
+
+    QAction *aboutAction;
     QAction* sendFileAction;
     QAction *nextParagraphAction; // 发送下一段文本
     QAction *clearInputAction; // 重打

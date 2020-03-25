@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>demo/demo1.txt</file>
+        <file>data/License.txt</file>
+        <file>data/about.txt</file>
     </qresource>
 </RCC>

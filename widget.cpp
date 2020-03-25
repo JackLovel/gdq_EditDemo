@@ -66,16 +66,28 @@ void Widget::setup()
     clearInputAction->setShortcut(tr("F3"));
     clearInputAction->setEnabled(false);
 
+    helpMenu = new QMenu("帮助");
+    aboutAction = new QAction("关于");
+    aboutAction->setShortcut(tr("F1"));
+    helpMenu->addAction(aboutAction);
+
     sendFileMenu->addAction(sendFileAction);
     sendFileMenu->addAction(nextParagraphAction);
     sendFileMenu->addAction(clearInputAction);
 
     menuBar()->addMenu(sendFileMenu);
+    menuBar()->addMenu(helpMenu);
 
     sendDialog = new SendArticeDialog;
     connect(sendFileAction, &QAction::triggered, this, [=](){
         sendDialog->show();
     });
+
+    aboutDialog = new AboutDialog;
+    connect(aboutAction, &QAction::triggered, this, [=](){
+        aboutDialog->show();
+    });
+
     connect(nextParagraphAction, &QAction::triggered, this, &Widget::getNextParagraph);
     connect(clearInputAction, &QAction::triggered, this, &Widget::clearInputEdit);
 
