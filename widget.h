@@ -44,6 +44,7 @@ public:
     double wordPercent();
     void sendArticleStatus();
     void clearInputEdit();
+    void setProgressBar(int);
 
 protected:
     bool eventFilter(QObject *o, QEvent *e);
@@ -74,6 +75,11 @@ private:
     qint32 paragraphSize;  // 文本共有n 个字
 
     QString artileName;
+
+    // 进度条
+    qint32 progressBarMax = 100;
+    qint32 progressBarInit = 0;
+
     /***菜单***/
     QMenu *sendFileMenu;
     QAction* sendFileAction;

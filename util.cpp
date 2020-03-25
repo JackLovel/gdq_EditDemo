@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QTextCodec>
+#include <QtMath>
 
 // 读取文本内容
 QString Util::readFile(const QString fileName)
@@ -34,6 +35,11 @@ QStringList Util::getFileNames(const QString &path)
     nameFilters << "*.txt";
     QStringList files = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
     return files;
+}
+
+int Util::cellWithPercent(int n, int m)
+{
+    return qCeil((double(n) / double(m)) * 100);
 }
 
 
