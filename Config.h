@@ -14,4 +14,8 @@
 #define ABOUT_Dialog_WIDTH 800
 #define ABOUT_Dialog_HEIGHT 400
 
+// 设置框
+#define CONFIG_DIALOG_TITLE "设置"
+#define CONFIG_DIALOG_WIDTH 800
+#define CONFIG_DIALOG_HEIGHT 400
 #endif // CONFIG_H

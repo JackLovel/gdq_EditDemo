@@ -5,7 +5,6 @@
 #include <QFont>
 #include <QDebug>
 #include <QtMath>
-//#include <QProgressBar>
 
 Widget::Widget(QWidget *parent) :
     QMainWindow(parent),
@@ -71,12 +70,18 @@ void Widget::setup()
     aboutAction->setShortcut(tr("F1"));
     helpMenu->addAction(aboutAction);
 
+    optionMenu = new QMenu("选项");
+    configAction = new QAction("设置");
+    configAction->setShortcut(tr("F5"));
+    optionMenu->addAction(configAction);
+
     sendFileMenu->addAction(sendFileAction);
     sendFileMenu->addAction(nextParagraphAction);
     sendFileMenu->addAction(clearInputAction);
 
     menuBar()->addMenu(sendFileMenu);
     menuBar()->addMenu(helpMenu);
+    menuBar()->addMenu(optionMenu);
 
     sendDialog = new SendArticeDialog;
     connect(sendFileAction, &QAction::triggered, this, [=](){
@@ -86,6 +91,11 @@ void Widget::setup()
     aboutDialog = new AboutDialog;
     connect(aboutAction, &QAction::triggered, this, [=](){
         aboutDialog->show();
+    });
+
+    configDialog = new ConfigDialog;
+    connect(configAction, &QAction::triggered, this, [=](){
+        configDialog->show();
     });
 
     connect(nextParagraphAction, &QAction::triggered, this, &Widget::getNextParagraph);

@@ -26,6 +26,7 @@ CONFIG += c++11
 
 SOURCES += \
         aboutdialog.cpp \
+        configdialog.cpp \
         main.cpp \
         pagewidget.cpp \
         richtextfont.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
         Config.h \
         aboutdialog.h \
         color.h \
+        configdialog.h \
         pagewidget.h \
         richtextfont.h \
         sendarticedialog.h \
@@ -45,6 +47,7 @@ HEADERS += \
 
 FORMS += \
         aboutdialog.ui \
+        configdialog.ui \
         pagewidget.ui \
         widget.ui
 
