@@ -20,6 +20,28 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
         }
     });
 
+
+    // 字体与背景颜色
+    ui->btn1->setStyleSheet(("QPushButton{background-color: rgb(0,120,215)}"));
+    ui->btn1->setText("");
+    ui->btn1->setFixedSize(30, 40);
+    ui->btn2->setStyleSheet(("QPushButton{background-color:rgb(245,152,214)}"));
+    ui->btn2->setText("");
+    ui->btn2->setFixedSize(30, 40);
+
+    ui->labelDisplay->setText(tr("选择"));
+    ui->labelDisplay->setFixedSize(60, 40);
+    ui->labelDisplay->setStyleSheet("QLabel{background-color: rgb(0,120,215)}");
+    connect(ui->btn1, &QPushButton::clicked, [=]{
+        ui->labelDisplay->setStyleSheet("QLabel{background-color: rgb(0,120,215)}");
+    });
+    connect(ui->btn2, &QPushButton::clicked, [=]{
+        ui->labelDisplay->setStyleSheet("QLabel{background-color: rgb(245,152,214)}");
+    });
+
+    QStringList list = {"自动", "黑色", "白色"};
+    ui->comboFont->addItems(list);
+
     setWindowTitle(CONFIG_DIALOG_TITLE);
     resize(CONFIG_DIALOG_WIDTH, CONFIG_DIALOG_HEIGHT);
 }
