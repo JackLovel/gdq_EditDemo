@@ -55,6 +55,7 @@ private slots:
     void LogInput();
     void recordTimeSlot();
     void getSendDialog(QString, int, QString, int);
+    void loadRectFile();
 
 private:
     Ui::Widget *ui;
@@ -88,6 +89,7 @@ private:
     QMenu *sendFileMenu;
     QMenu *helpMenu;
     QMenu *optionMenu;
+    QMenu *recentFileMenu;
 
     QAction *aboutAction;
     QAction* sendFileAction;

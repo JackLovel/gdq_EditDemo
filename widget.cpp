@@ -75,6 +75,11 @@ void Widget::setup()
     configAction->setShortcut(tr("F5"));
     optionMenu->addAction(configAction);
 
+
+    recentFileMenu = new QMenu("最近的文件");
+    loadRectFile();
+    menuBar()->addMenu(recentFileMenu);
+
     sendFileMenu->addAction(sendFileAction);
     sendFileMenu->addAction(nextParagraphAction);
     sendFileMenu->addAction(clearInputAction);
@@ -151,13 +156,6 @@ void Widget::LogInput()
     qint32 index = wordSize - 1;
     revision = isRevision(index);
 
-//    qDebug() << "内容：" << content
-//             << "字数：" << wordSize
-//             << "光标索引" << index
-//             << "之前的索引" << storeIndex
-//             << "回改：" << (revision ? "回改" : "没有回改");
-
-    // ("", "这", "是", "一", "个", "测", "试", "d", "e", "m", "o", "")
     QStringList displayContent = ui->textEdit->toPlainText().split("");
     int numberLimit = displayContent.size() - 2; // 排除两端的为空
 
@@ -205,6 +203,9 @@ void Widget::getSendDialog(QString content, int value, QString name, int article
 
     nextParagraphAction->setEnabled(true);
     ui->textEditInput->setEnabled(true);
+
+    QString path = qApp->applicationDirPath() + "/" + ARTICLE_DIR_FILE + "/" + artileName;
+    Util::writeSetting(artileName, path + ".txt");
 }
 
 void Widget::getNextParagraph() {
@@ -329,5 +330,25 @@ void Widget::setProgressBar(int v) {
     int percent = Util::cellWithPercent(v, l);
 
     ui->progressBar->setValue(percent);
+}
+
+void Widget::loadRectFile()
+{
+    auto maps = Util::readSetting();
+    for(auto k: maps.keys())
+    {
+        auto v = maps[k];
+        recentFileMenu->addAction(QString("%2").arg(v));
+    }
+
+    auto actionList = recentFileMenu->actions();
+    for(auto a : actionList) {
+        connect(a, &QAction::triggered, [=]{
+
+           auto path = a->text();
+           QString content = Util::readFile(path);
+//           ui->textEdit->setText(content); // 点击后执行的操作
+        });
+    }
 }
 
