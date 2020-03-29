@@ -5,6 +5,9 @@
 #include <QTextCodec>
 #include <QtMath>
 #include <QSettings>
+#include <QClipboard>
+#include <QMessageBox>
+#include <QApplication>
 
 // 读取文本内容
 QString Util::readFile(const QString fileName)
@@ -70,6 +73,20 @@ QMap<QString, QString> Util::readSetting()
     setting.endGroup();
 
     return map;
+}
+
+// 设置剪贴板的内容
+void Util::setClipboardContent()
+{
+    QClipboard *b = QApplication::clipboard();
+    b->setText("Text from Qt Application");
+}
+
+// 从剪贴板中读取内容
+QString Util::getClipboardContent()
+{
+    QClipboard *b = QApplication::clipboard();
+    return b->text();
 }
 
 
