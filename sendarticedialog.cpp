@@ -4,17 +4,13 @@
 SendArticeDialog::SendArticeDialog(QWidget *parent)
     : QWidget(parent)
 {
-    articleName = "";
-    articleSize = -1;
-
-    filePath = qApp->applicationDirPath() + "/" + ARTICLE_DIR_FILE; // 跟打文章目录的绝对路径
+    setup();
 
     sendFileBtn = new QPushButton(tr("发文"));
 
     textEdit = new QTextEdit(this);
     textEdit->setText("");
 
-    spinValue = 0;
     spinBox = new QSpinBox();
     spinBox->setValue(spinValue);
 
@@ -38,13 +34,23 @@ SendArticeDialog::SendArticeDialog(QWidget *parent)
     connect(sendFileBtn, &QPushButton::clicked, this, &SendArticeDialog::sendArticeSlot);
 
     setLayout(layout);
-    setWindowTitle(tr("发文"));
-    resize(300, 300);
 }
 
 SendArticeDialog::~SendArticeDialog()
 {
 
+}
+
+void SendArticeDialog::setup()
+{
+    articleName = "";
+    articleSize = -1;
+    spinValue = 0;
+
+    filePath = qApp->applicationDirPath() + "/" + ARTICLE_DIR_FILE; // 跟打文章目录的绝对路径
+
+    setWindowTitle(tr("发文"));
+    resize(300, 300);
 }
 
 void SendArticeDialog::switchPage()
