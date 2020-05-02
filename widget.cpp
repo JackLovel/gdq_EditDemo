@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "ui_widget.h"
+
 #include <QDebug>
 #include <QFont>
 #include <QDebug>
@@ -30,6 +31,8 @@ void Widget::setup()
     paragraphSize = -1;
     artileName = "";
 
+    progressBarMax = 100;
+    progressBarInit = 0;
 
     timer = new QTimer;
     timer->setInterval(1000); // 1s
@@ -62,16 +65,44 @@ void Widget::setup()
     clearInputAction->setShortcut(tr("F3"));
     clearInputAction->setEnabled(false);
 
+    helpMenu = new QMenu("帮助");
+    aboutAction = new QAction("关于");
+    aboutAction->setShortcut(tr("F1"));
+    helpMenu->addAction(aboutAction);
+
+    optionMenu = new QMenu("选项");
+    configAction = new QAction("设置");
+    configAction->setShortcut(tr("F5"));
+    optionMenu->addAction(configAction);
+
+
+    recentFileMenu = new QMenu("最近的文件");
+    loadRectFile();
+    menuBar()->addMenu(recentFileMenu);
+
     sendFileMenu->addAction(sendFileAction);
     sendFileMenu->addAction(nextParagraphAction);
     sendFileMenu->addAction(clearInputAction);
 
     menuBar()->addMenu(sendFileMenu);
+    menuBar()->addMenu(helpMenu);
+    menuBar()->addMenu(optionMenu);
 
     sendDialog = new SendArticeDialog;
     connect(sendFileAction, &QAction::triggered, this, [=](){
         sendDialog->show();
     });
+
+    aboutDialog = new AboutDialog;
+    connect(aboutAction, &QAction::triggered, this, [=](){
+        aboutDialog->show();
+    });
+
+    configDialog = new ConfigDialog;
+    connect(configAction, &QAction::triggered, this, [=](){
+        configDialog->show();
+    });
+
     connect(nextParagraphAction, &QAction::triggered, this, &Widget::getNextParagraph);
     connect(clearInputAction, &QAction::triggered, this, &Widget::clearInputEdit);
 
@@ -83,6 +114,9 @@ void Widget::setup()
     ui->textEdit->setReadOnly(true);
     ui->textEditInput->setFocus();
     ui->lineEditArticleTitle->setText(artileName);
+
+    ui->progressBar->setValue(progressBarInit);
+    ui->progressBar->setMaximum(progressBarMax);
 
     setWindowTitle(APP_NAME);
 }
@@ -111,23 +145,20 @@ void Widget::setDisplayContent(QVector<RichTextFont*> fonts) {
 void Widget::LogInput()
 {
     canTimer = true;
+
     QString content = ui->textEditInput->toPlainText();
     qint32 wordSize = content.size();
+
+    setProgressBar(wordSize);
+
     ui->labelInputWordSize->setText(QString("%1").arg(wordSize));
 
     qint32 index = wordSize - 1;
     revision = isRevision(index);
 
-//    qDebug() << "内容：" << content
-//             << "字数：" << wordSize
-//             << "光标索引" << index
-//             << "之前的索引" << storeIndex
-//             << "回改：" << (revision ? "回改" : "没有回改");
-
-    // ("", "这", "是", "一", "个", "测", "试", "d", "e", "m", "o", "")
-//    qDebug() << ui->textEdit->toPlainText().split("");
     QStringList displayContent = ui->textEdit->toPlainText().split("");
     int numberLimit = displayContent.size() - 2; // 排除两端的为空
+
     if (wordSize >= numberLimit) {
         timer->stop();
         ui->textEditInput->setReadOnly(true);
@@ -150,6 +181,7 @@ void Widget::getSendDialog(QString content, int value, QString name, int article
 {
     paragraphSize = articleSize;
     contents.clear();
+    ui->textEditInput->clear();
     if (value != 0) {
         totalParagraphIndex = qCeil(double(content.length()) / double(value));
         for(int i = 0; i < totalParagraphIndex; i++) {
@@ -170,6 +202,10 @@ void Widget::getSendDialog(QString content, int value, QString name, int article
     sendArticleStatus();
 
     nextParagraphAction->setEnabled(true);
+    ui->textEditInput->setEnabled(true);
+
+    QString path = qApp->applicationDirPath() + "/" + ARTICLE_DIR_FILE + "/" + artileName;
+    Util::writeSetting(artileName, path + ".txt");
 }
 
 void Widget::getNextParagraph() {
@@ -274,9 +310,9 @@ int Widget::restWordSize() {
     return paragraphSize - alreadySendWordSize();
 }
 
-double Widget::wordPercent() {
-     return qCeil((double(alreadySendWordSize()) /
-                            double(paragraphSize)) * 100);
+double Widget::wordPercent()
+{
+    return Util::cellWithPercent(alreadySendWordSize(), paragraphSize);
 }
 
 // 发文状态的相关信息
@@ -287,5 +323,32 @@ void Widget::sendArticleStatus()
     ui->lineEditTotalWord->setText(QString("%1").arg(paragraphSize));
     ui->lineEditRestWord->setText(QString("%1").arg(restWordSize()));
     ui->lineEditProcess->setText(QString("%1%").arg(wordPercent()));
+}
+
+void Widget::setProgressBar(int v) {
+    int l = ui->textEdit->toPlainText().length();
+    int percent = Util::cellWithPercent(v, l);
+
+    ui->progressBar->setValue(percent);
+}
+
+void Widget::loadRectFile()
+{
+    auto maps = Util::readSetting();
+    for(auto k: maps.keys())
+    {
+        auto v = maps[k];
+        recentFileMenu->addAction(QString("%2").arg(v));
+    }
+
+    auto actionList = recentFileMenu->actions();
+    for(auto a : actionList) {
+        connect(a, &QAction::triggered, [=]{
+
+           auto path = a->text();
+           QString content = Util::readFile(path);
+//           ui->textEdit->setText(content); // 点击后执行的操作
+        });
+    }
 }
 

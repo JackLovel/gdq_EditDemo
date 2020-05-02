@@ -6,6 +6,8 @@
 #include "sendarticedialog.h"
 #include "Config.h"
 #include "util.h"
+#include "aboutdialog.h"
+#include "configdialog.h"
 
 #include <QWidget>
 #include <QObject>
@@ -44,6 +46,7 @@ public:
     double wordPercent();
     void sendArticleStatus();
     void clearInputEdit();
+    void setProgressBar(int);
 
 protected:
     bool eventFilter(QObject *o, QEvent *e);
@@ -52,10 +55,13 @@ private slots:
     void LogInput();
     void recordTimeSlot();
     void getSendDialog(QString, int, QString, int);
+    void loadRectFile();
 
 private:
     Ui::Widget *ui;
     SendArticeDialog *sendDialog;
+    AboutDialog *aboutDialog;
+    ConfigDialog *configDialog;
 
     qint32 storeIndex; // 用于存放 输入 时的索引
     bool revision; // 输入框 是否回改
@@ -74,11 +80,23 @@ private:
     qint32 paragraphSize;  // 文本共有n 个字
 
     QString artileName;
+
+    // 进度条
+    qint32 progressBarMax = 100;
+    qint32 progressBarInit = 0;
+
     /***菜单***/
     QMenu *sendFileMenu;
+    QMenu *helpMenu;
+    QMenu *optionMenu;
+    QMenu *recentFileMenu;
+
+    QAction *aboutAction;
     QAction* sendFileAction;
     QAction *nextParagraphAction; // 发送下一段文本
     QAction *clearInputAction; // 重打
+
+    QAction *configAction;
 };
 
 #endif // WIDGET_H

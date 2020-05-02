@@ -44,6 +44,8 @@ private:
     QSpinBox *spinBox;
     qint32 spinValue;
     QPushButton *sendFileBtn;
+
+    void setup();
 };
 
 #endif // SENDARTICEDIALOG_H

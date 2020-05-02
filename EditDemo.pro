@@ -25,6 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        aboutdialog.cpp \
+        configdialog.cpp \
         main.cpp \
         pagewidget.cpp \
         richtextfont.cpp \
@@ -34,7 +36,9 @@ SOURCES += \
 
 HEADERS += \
         Config.h \
+        aboutdialog.h \
         color.h \
+        configdialog.h \
         pagewidget.h \
         richtextfont.h \
         sendarticedialog.h \
@@ -42,6 +46,8 @@ HEADERS += \
         widget.h
 
 FORMS += \
+        aboutdialog.ui \
+        configdialog.ui \
         pagewidget.ui \
         widget.ui
 
