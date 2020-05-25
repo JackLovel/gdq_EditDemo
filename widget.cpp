@@ -5,6 +5,8 @@
 #include <QFont>
 #include <QDebug>
 #include <QtMath>
+#include <QStandardItemModel>
+#include <QThread>
 
 Widget::Widget(QWidget *parent) :
     QMainWindow(parent),
@@ -13,6 +15,7 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
 
     setup();
+    debug();
 }
 
 Widget::~Widget()
@@ -35,11 +38,15 @@ void Widget::setup()
     progressBarInit = 0;
 
     timer = new QTimer;
-    timer->setInterval(1000); // 1s
-    timer->start();
+    baseTime = *new QTime;
     recordTime = 0;
     canTimer = false;
-    connect(timer, &QTimer::timeout, this, &Widget::recordTimeSlot);
+    timeEnable = false;
+    timeThread = new QThread();
+    timer->moveToThread(timeThread);
+    timer->setInterval(1);
+    connect(timeThread, SIGNAL(started()), timer, SLOT(start()));
+    connect(timer, &QTimer::timeout, this, &Widget::updateDisplay);
 
     // 打开时的提示信息
     QString content = OPEN_PROMPT;
@@ -75,6 +82,13 @@ void Widget::setup()
     configAction->setShortcut(tr("F5"));
     optionMenu->addAction(configAction);
 
+    toolMenu = new QMenu("工具");
+    fileEncodeAction = new QAction("文件编码转换");
+    toolMenu->addAction(fileEncodeAction);
+    fileEncodeDialog = new FileEncodeDialog;
+    connect(fileEncodeAction, &QAction::triggered, this, [=](){
+        fileEncodeDialog->show();
+    });
 
     recentFileMenu = new QMenu("最近的文件");
     loadRectFile();
@@ -87,6 +101,7 @@ void Widget::setup()
     menuBar()->addMenu(sendFileMenu);
     menuBar()->addMenu(helpMenu);
     menuBar()->addMenu(optionMenu);
+    menuBar()->addMenu(toolMenu);
 
     sendDialog = new SendArticeDialog;
     connect(sendFileAction, &QAction::triggered, this, [=](){
@@ -110,7 +125,7 @@ void Widget::setup()
             SLOT(getSendDialog(QString, int, QString, int)));
 
     connect(ui->textEditInput, &QTextEdit::cursorPositionChanged, this, &Widget::LogInput);
-
+    connect(ui->textEditInput, &QTextEdit::textChanged, this, &Widget::startTimeSlot);
     ui->textEdit->setReadOnly(true);
     ui->textEditInput->setFocus();
     ui->lineEditArticleTitle->setText(artileName);
@@ -119,8 +134,35 @@ void Widget::setup()
     ui->progressBar->setMaximum(progressBarMax);
 
     setWindowTitle(APP_NAME);
+
+
+    // 跟打结果显示图表
+    QStandardItemModel  *model = new QStandardItemModel();
+
+    model->setColumnCount(2);
+    model->setHeaderData(0,Qt::Horizontal,"速度");
+    model->setHeaderData(1,Qt::Horizontal,"击键");
+
+    model->setItem(0, 0, new QStandardItem("90.0"));
+    model->setItem(0, 1, new QStandardItem("33"));
+
+    model->item(0, 0)->setTextAlignment(Qt::AlignCenter);
+    model->item(0, 1)->setTextAlignment(Qt::AlignCenter);
+
+    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableView->setModel(model);
+    ui->tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->tableView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    ui->tableView->horizontalHeader()->setMinimumSectionSize(100);
 }
 
+void Widget::debug() {
+//    FileGbkToUtf8
+    QString path = "D:\\样列代码\\极速跟打器v1.51\\文章\\常用单字后五百.txt";
+    QString content = Util::FileGbkToUtf8(path);
+    qDebug() << content;
+}
 void Widget::convertToVector(QString input)
 {
     QStringList list = input.split("",QString::SkipEmptyParts);
@@ -209,6 +251,14 @@ void Widget::getSendDialog(QString content, int value, QString name, int article
 }
 
 void Widget::getNextParagraph() {
+    // 切换到下一个段落时，我们需要清除一些状态
+    // 回改
+    revisionCount = 0;
+    ui->labelRevisionCount->setText(QString("%1").arg(revisionCount));
+    // 时间
+    recordTime = 0;
+    ui->labelTime->setText(QString("%1秒").arg(recordTime));
+
     ++currentParagraphIndex;
     if (currentParagraphIndex >= totalParagraphIndex - 1) {
         currentParagraphIndex = totalParagraphIndex - 1;
@@ -349,6 +399,25 @@ void Widget::loadRectFile()
            QString content = Util::readFile(path);
 //           ui->textEdit->setText(content); // 点击后执行的操作
         });
+    }
+}
+
+void Widget::updateDisplay()
+{
+    QTime c = QTime::currentTime();
+    int t = baseTime.msecsTo(c);
+    QTime showTime(0,0,0,0);
+    showTime = showTime.addMSecs(t);
+    QString timeStr = showTime.toString("hh:mm:ss:zzz");
+    ui->labelTime->setText(timeStr);
+}
+
+void Widget::startTimeSlot()
+{
+    if (!timeEnable) {
+        baseTime = baseTime.currentTime();
+        timeThread->start();
+        timeEnable = !timeEnable;
     }
 }
 

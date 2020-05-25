@@ -5,35 +5,6 @@ SendArticeDialog::SendArticeDialog(QWidget *parent)
     : QWidget(parent)
 {
     setup();
-
-    sendFileBtn = new QPushButton(tr("发文"));
-
-    textEdit = new QTextEdit(this);
-    textEdit->setText("");
-
-    spinBox = new QSpinBox();
-    spinBox->setValue(spinValue);
-
-    QStringList files = Util::getFileNames(filePath);
-    fileList = new QListWidget(this);
-
-    fileList->addItem(new QListWidgetItem("剪贴板", fileList));
-    for(int i=0;i<files.size();i++){
-            fileList->addItem(new QListWidgetItem(QString("%1").arg(files.at(i)),fileList));
-    }
-    connect(fileList,SIGNAL(itemClicked(QListWidgetItem *)),this,SLOT(listItemClicked(QListWidgetItem *)));
-    wordSizeLabel = new QLabel();
-
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(fileList);
-    layout->addWidget(textEdit);
-    layout->addWidget(wordSizeLabel);
-    layout->addWidget(spinBox);
-    layout->addWidget(sendFileBtn);
-
-    connect(sendFileBtn, &QPushButton::clicked, this, &SendArticeDialog::sendArticeSlot);
-
-    setLayout(layout);
 }
 
 SendArticeDialog::~SendArticeDialog()
@@ -49,10 +20,80 @@ void SendArticeDialog::setup()
 
     filePath = qApp->applicationDirPath() + "/" + ARTICLE_DIR_FILE; // 跟打文章目录的绝对路径
 
+
+    setupUi();
+    setupArticleList();
+
+    connect(fileList,SIGNAL(itemClicked(QListWidgetItem *)),this,SLOT(listItemClicked(QListWidgetItem *)));
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(fileList);
+    layout->addWidget(textEdit);
+    layout->addWidget(wordSizeLabel);
+    layout->addWidget(spinBox);
+    layout->addWidget(sendFileBtn);
+
+    connect(sendFileBtn, &QPushButton::clicked, this, &SendArticeDialog::sendArticeSlot);
+
+    setLayout(layout);
     setWindowTitle(tr("发文"));
-    resize(300, 300);
+    resize(800, 500);
 }
 
+void SendArticeDialog::setupArticleList()
+{
+    fileList = new QListWidget(this);
+
+    fileList->addItem(new QListWidgetItem("剪贴板", fileList));
+
+    // 放到 目录里的文件
+    QStringList files = Util::getFileNames(filePath);
+    for (auto f: files) {
+        auto a = new Article(f, 0);
+        articles.push_back(a);
+    }
+    for(int i=0;i<files.size();i++){
+            fileList->addItem(new QListWidgetItem(QString("%1").arg(articles.at(i)->name), fileList));
+    }
+    //
+    fileList->addItem(new QListWidgetItem("---本地文件---", fileList));
+    // todo: 本地文件
+    QStringList localFiles = {
+                                "冰灯.txt",
+                                "四季.txt",
+                                "常用单字中五百.txt",
+                                "常用词组.txt",
+                                "心的出口.txt",
+                                "我的文章.txt",
+                             };
+
+    for (auto a: localFiles) {
+        auto article = new Article(a, 1);
+        localArticles.push_back(article);
+    }
+    for(int i=0;i<localArticles.size();i++){
+            fileList->addItem(new QListWidgetItem(
+                                  QString("%1").arg(localArticles.at(i)->name),
+                                  fileList));
+    }
+
+    splitIndex = 1 + files.length();
+}
+
+void SendArticeDialog::setupUi()
+{
+
+    sendFileBtn = new QPushButton(tr("发文"));
+
+    textEdit = new QTextEdit(this);
+    textEdit->setText("");
+    textEdit->setReadOnly(true);
+
+    spinBox = new QSpinBox();
+    spinBox->setValue(spinValue);
+
+    wordSizeLabel = new QLabel();
+}
 void SendArticeDialog::switchPage()
 {
     int count = stackedWidget->count();
@@ -68,19 +109,36 @@ void SendArticeDialog::switchPage()
 
 void SendArticeDialog::listItemClicked(QListWidgetItem *item)
 {
-    QString itemText = item->text();
     QString content = "";
-    if (itemText == "剪贴板") {
+    qint32 selectIndex = fileList->row(item);
+    Article *a;
+    QString fileSize = "";
+    QString fileName = item->text();
+
+    if (selectIndex == 0) {
         content = Util::getClipboardContent();
-    } else {
-        articleName = itemText.split(".").first();
-        QString path = filePath + "/" + itemText;
-        content = Util::readFile(path);
+        articleSize = content.size();
+        fileSize = "";
+    } else if (selectIndex < splitIndex) {
+        a = articles.at(selectIndex - 1);
+        content = a->content;
+        articleSize = a->wordSize;
+        fileSize = a->fileSize;
+    } else if (selectIndex == splitIndex) {
+        content = "下面的文章为本地文章";
+        articleSize = content.size();
+        fileSize = "";
+    } else if (selectIndex > splitIndex) {
+        int index = selectIndex - splitIndex - 1;
+        a = localArticles[index];
+        content = a->content;
+        articleSize = a->wordSize;
+        fileSize = a->fileSize;
     }
 
     textEdit->setText(content);
-    articleSize = content.length();
     wordSizeLabel->setText(QString("%1字").arg(articleSize));
+    setWindowTitle(QString("%1--%2").arg(fileName).arg(fileSize));
 }
 
 void SendArticeDialog::sendArticeSlot()

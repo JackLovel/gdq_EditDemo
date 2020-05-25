@@ -3,6 +3,7 @@
 
 #include "pagewidget.h"
 #include "util.h"
+#include "article.h"
 
 #include <QWidget>
 #include <QStackedWidget>
@@ -46,6 +47,12 @@ private:
     QPushButton *sendFileBtn;
 
     void setup();
+    void setupUi();
+    void setupArticleList();
+
+    QVector<Article*> articles;
+    int splitIndex;
+    QVector<Article*> localArticles;
 };
 
 #endif // SENDARTICEDIALOG_H

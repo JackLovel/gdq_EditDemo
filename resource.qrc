@@ -3,5 +3,11 @@
         <file>demo/demo1.txt</file>
         <file>data/License.txt</file>
         <file>data/about.txt</file>
+        <file>local_article/冰灯.txt</file>
+        <file>local_article/常用词组.txt</file>
+        <file>local_article/常用单字中五百.txt</file>
+        <file>local_article/四季.txt</file>
+        <file>local_article/我的文章.txt</file>
+        <file>local_article/心的出口.txt</file>
     </qresource>
 </RCC>
