@@ -14,6 +14,10 @@ public:
     static QMap<QString, QString> readSetting();
     static void setClipboardContent();
     static QString getClipboardContent();
+    static QString getSplitLast(QString path, QString separator);
+    static QString FileGbkToUtf8(QString path);
+    static QString GbkToUtf8(const char* szGBK);
+    static QString getFileEncode(QString path);
 };
 
 #endif // UTIL_H

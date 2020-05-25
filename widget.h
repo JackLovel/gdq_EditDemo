@@ -8,6 +8,7 @@
 #include "util.h"
 #include "aboutdialog.h"
 #include "configdialog.h"
+#include "fileencodedialog.h"
 
 #include <QWidget>
 #include <QObject>
@@ -16,6 +17,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMainWindow>
+#include <QTime>
 
 namespace Ui {
 class Widget;
@@ -57,11 +59,14 @@ private slots:
     void getSendDialog(QString, int, QString, int);
     void loadRectFile();
 
+    void startTimeSlot();
+
 private:
     Ui::Widget *ui;
     SendArticeDialog *sendDialog;
     AboutDialog *aboutDialog;
     ConfigDialog *configDialog;
+    FileEncodeDialog *fileEncodeDialog;
 
     qint32 storeIndex; // 用于存放 输入 时的索引
     bool revision; // 输入框 是否回改
@@ -71,6 +76,11 @@ private:
     qint32 recordTime; // 记录输入的时间
     QTimer *timer;
     bool canTimer; // 是否可以被计时
+    QTime baseTime; // 开始打字的时间
+    bool timeEnable;
+//    QTime showTime;
+    void updateDisplay();
+    QThread *timeThread;
 
     qint32 typeNumber; // 获取按键次数
 
@@ -90,6 +100,7 @@ private:
     QMenu *helpMenu;
     QMenu *optionMenu;
     QMenu *recentFileMenu;
+    QMenu *toolMenu;
 
     QAction *aboutAction;
     QAction* sendFileAction;
@@ -97,6 +108,9 @@ private:
     QAction *clearInputAction; // 重打
 
     QAction *configAction;
+    QAction *fileEncodeAction;
+
+    void debug();
 };
 
 #endif // WIDGET_H

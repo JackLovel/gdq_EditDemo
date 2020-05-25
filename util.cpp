@@ -89,5 +89,54 @@ QString Util::getClipboardContent()
     return b->text();
 }
 
+QString Util::getSplitLast(QString path, QString separator)
+{
+    return path.split(separator).last();
+}
+
+QString Util::FileGbkToUtf8(QString path)
+{
+    QString content = "";
+    QTextCodec *code = QTextCodec::codecForName("GB2312");  // "GB2312" 编码读取
+    if (!path.isEmpty()) {
+        QFile *file = new QFile();
+        file->setFileName(path);
+        bool ok = file->open(QIODevice::ReadOnly);
+        if (ok) {
+            QTextStream read(file);
+            read.setCodec(code);
+            content = read.readAll();
+            file->close();
+            delete file;
+        } else {
+            content = "";
+        }
+
+        QFile fw(path);
+        fw.open(QIODevice::WriteOnly | QIODevice::Text);
+        fw.write(content.toUtf8());
+        fw.close();
+    }
+
+    return content;
+}
+
+//https://www.cnblogs.com/kinglxg/p/12845974.html
+QString Util::GbkToUtf8(const char* szGBK)
+{
+    if (szGBK == nullptr) {
+        return "";
+    }
+
+    QString content = "";
+    QTextCodec* pGBKCodec = QTextCodec::codecForName("GB2312");
+
+    return pGBKCodec->toUnicode(szGBK);
+}
+
+
+QString Util::getFileEncode(QString path) {
+
+}
 
 
