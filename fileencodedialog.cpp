@@ -13,9 +13,12 @@ FileEncodeDialog::FileEncodeDialog(QWidget *parent) :
     currentFilePath = "";
     QStringList encodeList = {
         "UTF-8",
-        "GBK", // GB2312
+//        "GBK", // GB2312
     };
     ui->comboBox->addItems(encodeList);
+    ui->comboBox->setCurrentIndex(0);
+    currentEncode = "UTF-8";
+    connect(ui->comboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(setEncode(QString)));
 
     setWindowTitle("文件编码转换");
 }
@@ -36,11 +39,19 @@ void FileEncodeDialog::on_pushButton_clicked()
     }
 }
 
+// 点击转换
 void FileEncodeDialog::on_pushButton_3_clicked()
 {
-    Util::FileGbkToUtf8(currentFilePath);
+    if (currentFilePath.isEmpty()) {
+        return;
+    }
+    if (currentEncode == "UTF-8") {
+        Util::FileGbkToUtf8(currentFilePath);
+    } else if (currentEncode == "GBK") {
+        qDebug() << "这个函数实现暂时有问题";
+//        Util::FileUtf8ToGbk(currentFilePath);
+    }
     ui->label->setText("文件编码转换成功");
-    currentFilePath = "";
 }
 
 void FileEncodeDialog::on_pushButton_2_clicked()
@@ -72,7 +83,17 @@ void FileEncodeDialog::on_pushButton_2_clicked()
         }
 
         for (auto p : filePaths) {
-            Util::FileGbkToUtf8(p);
+            if (currentEncode == "UTF-8") {
+                 Util::FileGbkToUtf8(p);
+            } else if (currentEncode == "GBK") {
+                qDebug() << "这个函数实现暂时bug";
+        //        Util::FileUtf8ToGbk(currentFilePath);
+            }
         }
     }
+}
+
+void FileEncodeDialog::setEncode(QString item)
+{
+    currentEncode = item;
 }

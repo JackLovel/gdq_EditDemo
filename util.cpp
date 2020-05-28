@@ -121,6 +121,36 @@ QString Util::FileGbkToUtf8(QString path)
     return content;
 }
 
+// bug
+QString Util::FileUtf8ToGbk(QString path)
+{
+    QString content = "";
+    QTextCodec *gbk = QTextCodec::codecForName("GB2312");
+    QTextCodec *code = QTextCodec::codecForName("UTF-8");  // "GB2312" 编码读取
+    if (!path.isEmpty()) {
+        QFile *file = new QFile();
+        file->setFileName(path);
+        bool ok = file->open(QIODevice::ReadOnly);
+        if (ok) {
+            QTextStream read(file);
+            read.setCodec(code);
+            content = read.readAll();
+            file->close();
+            delete file;
+        } else {
+            content = "";
+        }
+
+        QFile fw(path);
+        fw.open(QIODevice::WriteOnly | QIODevice::Text);
+        const char* str = gbk->toUnicode(content.toLocal8Bit()).toLatin1();
+        fw.write(str);
+        fw.close();
+    }
+
+    return content;
+}
+
 //https://www.cnblogs.com/kinglxg/p/12845974.html
 QString Util::GbkToUtf8(const char* szGBK)
 {
@@ -132,11 +162,6 @@ QString Util::GbkToUtf8(const char* szGBK)
     QTextCodec* pGBKCodec = QTextCodec::codecForName("GB2312");
 
     return pGBKCodec->toUnicode(szGBK);
-}
-
-
-QString Util::getFileEncode(QString path) {
-
 }
 
 

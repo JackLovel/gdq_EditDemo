@@ -29,10 +29,10 @@ private:
     QString currentFilePath;
     QString currentEncode;
 
-    typedef enum Encode{
-        utf8=1,
-        gbk,
-    } FileEncoding;
+//    typedef enum Encode{
+//        utf8=1,
+//        gbk,
+//    } FileEncoding;
 };
 
 #endif // FILEENCODEDIALOG_H
