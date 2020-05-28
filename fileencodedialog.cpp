@@ -68,14 +68,10 @@ void FileEncodeDialog::on_pushButton_2_clicked()
     {
 
         QDir dir(path);
-        //设置文件过滤器
         QStringList nameFilters;
-        //设置文件过滤格式
         nameFilters << "*.txt";
-        //将过滤后的文件名称存入到files列表中
         QStringList files = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
 
-//        qDebug() << files;
         QString p;
         for (auto f : files) {
             p =  path + "/" + f;
@@ -86,7 +82,7 @@ void FileEncodeDialog::on_pushButton_2_clicked()
             if (currentEncode == "UTF-8") {
                  Util::FileGbkToUtf8(p);
             } else if (currentEncode == "GBK") {
-                qDebug() << "这个函数实现暂时bug";
+                qDebug() << "这个函数实现暂时有bug";
         //        Util::FileUtf8ToGbk(currentFilePath);
             }
         }
@@ -96,4 +92,14 @@ void FileEncodeDialog::on_pushButton_2_clicked()
 void FileEncodeDialog::setEncode(QString item)
 {
     currentEncode = item;
+    qDebug() << item;
+    QString title = "";
+    if (item == "UTF-8") {
+         title = "gbk 转 utf-8";
+    } else if (item == "GBK") {
+        qDebug() << "这个函数实现暂时有bug";
+        title = "utf-8 转 gbk";
+//        Util::FileUtf8ToGbk(currentFilePath);
+    }
+    setWindowTitle(title);
 }

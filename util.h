@@ -18,7 +18,6 @@ public:
     static QString FileGbkToUtf8(QString path);
     static QString FileUtf8ToGbk(QString path);
     static QString GbkToUtf8(const char* szGBK);
-    static QString getFileEncode(QString path);
 };
 
 #endif // UTIL_H
