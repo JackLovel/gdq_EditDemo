@@ -112,29 +112,40 @@ void SendArticeDialog::listItemClicked(QListWidgetItem *item)
     Article *a;
     QString fileSize = "";
     QString fileName = item->text();
+    bool sendBtnStatus = false;
 
     if (selectIndex == 0) {
         content = Util::getClipboardContent();
         articleSize = content.size();
         fileSize = "";
+        articleName = "剪贴板里的内容";
+        sendBtnStatus = true;
     } else if (selectIndex < splitIndex) {
         a = articles.at(selectIndex - 1);
         content = a->content;
         articleSize = a->wordSize;
         fileSize = a->fileSize;
+        articleName = a->name;
+        sendBtnStatus = true;
     } else if (selectIndex == splitIndex) {
         content = "下面的文章为本地文章";
         articleSize = content.size();
         fileSize = "";
+        sendBtnStatus = false;
+//        sendFileBtn->setEnabled(false);
+//        articleName = "";
     } else if (selectIndex > splitIndex) {
         int index = selectIndex - splitIndex - 1;
         a = localArticles[index];
         content = a->content;
         articleSize = a->wordSize;
         fileSize = a->fileSize;
+        articleName = a->name;
+        sendBtnStatus = true;
     }
 
     textEdit->setText(content);
+    sendFileBtn->setEnabled(sendBtnStatus);
     wordSizeLabel->setText(QString("%1字").arg(articleSize));
     setWindowTitle(QString("%1--%2").arg(fileName).arg(fileSize));
 }
