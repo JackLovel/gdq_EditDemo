@@ -164,4 +164,11 @@ QString Util::GbkToUtf8(const char* szGBK)
     return pGBKCodec->toUnicode(szGBK);
 }
 
-
+// 如果目录不存在，我们就创建它
+void Util::checkDirExist(const QString &path) {
+    QDir dir;
+    QFileInfo info(path);
+    if (!info.exists()) {
+        dir.mkpath(path);
+    }
+}

@@ -18,9 +18,6 @@ void SendArticeDialog::setup()
     articleSize = -1;
     spinValue = 0;
 
-    filePath = qApp->applicationDirPath() + "/" + ARTICLE_DIR_FILE; // 跟打文章目录的绝对路径
-
-
     setupUi();
     setupArticleList();
 
@@ -46,8 +43,9 @@ void SendArticeDialog::setupArticleList()
 
     fileList->addItem(new QListWidgetItem("剪贴板", fileList));
 
-    // 放到 目录里的文件
-    QStringList files = Util::getFileNames(filePath);
+    putFileDir = qApp->applicationDirPath() + "/" + ARTICLE_DIR_FILE;
+    Util::checkDirExist(putFileDir);
+    QStringList files = Util::getFileNames(putFileDir);
     for (auto f: files) {
         auto a = new Article(f, 0);
         articles.push_back(a);
