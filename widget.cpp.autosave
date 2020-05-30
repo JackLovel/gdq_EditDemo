@@ -219,11 +219,6 @@ void Widget::LogInput()
     clearInputAction->setEnabled(true);
 }
 
-//void Widget::recordTimeSlot()
-//{
-
-//}
-
 void Widget::getSendDialog(QString content, int value, QString name, int articleSize)
 {
     paragraphSize = articleSize;
@@ -406,11 +401,6 @@ void Widget::loadRectFile()
         });
     }
 }
-
-//void Widget::updateDisplay()
-//{
-
-//}
 
 void Widget::startTimeSlot()
 {
