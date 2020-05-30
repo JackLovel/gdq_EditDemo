@@ -399,6 +399,6 @@ void Widget::loadRectFile()
 
 void Widget::startTimeSlot()
 {
-    showDateTime->start(1);
+    showDateTime->start(1000);
 }
 
