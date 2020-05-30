@@ -47,11 +47,6 @@ void Widget::setup()
     recordTime = 0;
     canTimer = false;
     timeEnable = false;
-//    timeThread = new QThread();
-//    timer->moveToThread(timeThread);
-//    timer->setInterval(1);
-//    connect(timeThread, SIGNAL(started()), timer, SLOT(start()));
-//    connect(timer, &QTimer::timeout, this, &Widget::updateDisplay);
 
     // 打开时的提示信息
     QString content = OPEN_PROMPT;
@@ -218,11 +213,6 @@ void Widget::LogInput()
     storeIndex = index;
     clearInputAction->setEnabled(true);
 }
-
-//void Widget::recordTimeSlot()
-//{
-
-//}
 
 void Widget::getSendDialog(QString content, int value, QString name, int articleSize)
 {
@@ -406,11 +396,6 @@ void Widget::loadRectFile()
         });
     }
 }
-
-//void Widget::updateDisplay()
-//{
-
-//}
 
 void Widget::startTimeSlot()
 {
