@@ -45,9 +45,9 @@ void Widget::setup()
 
     timer = new QTimer;
     baseTime = *new QTime;
-    recordTime = 0;
-    canTimer = false;
-    timeEnable = false;
+//    recordTime = 0;
+//    canTimer = false;
+//    timeEnable = false;
 
     // 打开时的提示信息
     QString content = OPEN_PROMPT;
@@ -126,9 +126,7 @@ void Widget::setup()
             SLOT(getSendDialog(QString, int, QString, int)));
 
     connect(ui->textEditInput, &QTextEdit::cursorPositionChanged, this, &Widget::LogInput);
-     connect(ui->textEditInput, &QTextEdit::textChanged,this,&Widget::startTimeSlot);
-//    connect(ui->textEditInput, SIGNAL(textChanged(const QString &)), this, SLOT(startTimeSlot(const QString &)));
-//    connect(lineEdit,SIGNAL(textChanged(const QString &)),this,SLOT(enableFindButton(const QString &)));
+    connect(ui->textEditInput, &QTextEdit::textChanged,this,&Widget::startTimeSlot);
 
     ui->textEdit->setReadOnly(true);
     ui->textEditInput->setFocus();
@@ -190,7 +188,7 @@ void Widget::setDisplayContent(QVector<RichTextFont*> fonts) {
 
 void Widget::LogInput()
 {
-    canTimer = true;
+//    canTimer = true;
 
     QString content = ui->textEditInput->toPlainText();
     qint32 wordSize = content.size();
@@ -244,6 +242,7 @@ void Widget::getSendDialog(QString content, int value, QString name, int article
 
     QString path = qApp->applicationDirPath() + "/" + ARTICLE_DIR_FILE + "/" + artileName;
     Util::writeSetting(artileName, path + ".txt");
+//    showDateTime->clear();
 }
 
 void Widget::getNextParagraph() {
@@ -252,9 +251,9 @@ void Widget::getNextParagraph() {
     revisionCount = 0;
     ui->labelRevisionCount->setText(QString("%1").arg(revisionCount));
     // 时间
-    recordTime = 0;
-    ui->labelTime->setText(QString("%1秒").arg(recordTime));
-
+//    recordTime = 0;
+//    ui->labelTime->setText(QString("%1秒").arg(recordTime));
+    showDateTime->clear();
     ++currentParagraphIndex;
     if (currentParagraphIndex >= totalParagraphIndex - 1) {
         currentParagraphIndex = totalParagraphIndex - 1;
