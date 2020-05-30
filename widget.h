@@ -10,6 +10,7 @@
 #include "configdialog.h"
 #include "fileencodedialog.h"
 #include "showdatetime.h"
+#include "showscoretable.h"
 
 #include <QWidget>
 #include <QObject>
@@ -69,6 +70,7 @@ private:
     ConfigDialog *configDialog;
     FileEncodeDialog *fileEncodeDialog;
     ShowDateTime *showDateTime;
+    ShowScoreTable *showScoreTable;
 
     qint32 storeIndex; // 用于存放 输入 时的索引
     bool revision; // 输入框 是否回改
