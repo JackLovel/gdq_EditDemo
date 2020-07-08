@@ -135,6 +135,14 @@ void Widget::setup()
     ui->progressBar->setValue(progressBarInit);
     ui->progressBar->setMaximum(progressBarMax);
 
+    // init send status lines
+    ui->lineEditArticleTitle->setReadOnly(true);
+    ui->lineEditAlreadySendParagraph->setReadOnly(true);
+    ui->lineEditTotalWord->setReadOnly(true);
+    ui->lineEditRestWord->setReadOnly(true);
+    ui->lineEditProcess->setReadOnly(true);
+
+
     setWindowTitle(APP_NAME);
 
 
