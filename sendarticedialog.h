@@ -39,7 +39,7 @@ private:
     QStackedWidget *stackedWidget;
     QListWidget *fileList;
     QTextEdit *textEdit;
-    QString filePath;
+    QString putFileDir; // 这是自已放置文件的目录
 
     QLabel *wordSizeLabel;
     QSpinBox *spinBox;

@@ -21,11 +21,18 @@ private slots:
     void on_pushButton_3_clicked();
 
     void on_pushButton_2_clicked();
+    void setEncode(QString item);
 
 private:
     Ui::FileEncodeDialog *ui;
 
     QString currentFilePath;
+    QString currentEncode;
+
+//    typedef enum Encode{
+//        utf8=1,
+//        gbk,
+//    } FileEncoding;
 };
 
 #endif // FILEENCODEDIALOG_H

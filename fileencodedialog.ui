@@ -13,67 +13,119 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>690</x>
-     <y>30</y>
-     <width>121</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>添加文件</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_2">
-   <property name="geometry">
-    <rect>
-     <x>690</x>
-     <y>100</y>
-     <width>121</width>
-     <height>34</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>添加目录</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBox">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>40</y>
-     <width>99</width>
-     <height>24</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>80</x>
-     <y>320</y>
+     <x>270</x>
+     <y>50</y>
      <width>251</width>
-     <height>71</height>
+     <height>171</height>
     </rect>
    </property>
-   <property name="text">
-    <string>显示状态</string>
+   <property name="title">
+    <string>选择要转换的编码</string>
    </property>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>40</y>
+      <width>99</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
-     <x>690</x>
-     <y>170</y>
-     <width>112</width>
-     <height>34</height>
+     <x>40</x>
+     <y>40</y>
+     <width>181</width>
+     <height>181</height>
     </rect>
    </property>
-   <property name="text">
-    <string>开始转换</string>
+   <property name="title">
+    <string>添加目录或文件</string>
    </property>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>50</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>添加文件</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>120</y>
+      <width>121</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>添加目录</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_3">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>240</y>
+     <width>331</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>操作显示</string>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>251</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>显示状态</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_4">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>50</y>
+     <width>211</width>
+     <height>171</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>点击转换</string>
+   </property>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>121</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>开始转换</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

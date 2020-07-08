@@ -9,6 +9,8 @@
 #include "aboutdialog.h"
 #include "configdialog.h"
 #include "fileencodedialog.h"
+#include "showdatetime.h"
+#include "showscoretable.h"
 
 #include <QWidget>
 #include <QObject>
@@ -55,7 +57,7 @@ protected:
 
 private slots:
     void LogInput();
-    void recordTimeSlot();
+//    void recordTimeSlot();
     void getSendDialog(QString, int, QString, int);
     void loadRectFile();
 
@@ -67,6 +69,8 @@ private:
     AboutDialog *aboutDialog;
     ConfigDialog *configDialog;
     FileEncodeDialog *fileEncodeDialog;
+    ShowDateTime *showDateTime;
+    ShowScoreTable *showScoreTable;
 
     qint32 storeIndex; // 用于存放 输入 时的索引
     bool revision; // 输入框 是否回改
@@ -79,7 +83,7 @@ private:
     QTime baseTime; // 开始打字的时间
     bool timeEnable;
 //    QTime showTime;
-    void updateDisplay();
+//    void updateDisplay();
     QThread *timeThread;
 
     qint32 typeNumber; // 获取按键次数

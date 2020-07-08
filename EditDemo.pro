@@ -33,6 +33,8 @@ SOURCES += \
         pagewidget.cpp \
         richtextfont.cpp \
         sendarticedialog.cpp \
+        showdatetime.cpp \
+        showscoretable.cpp \
         util.cpp \
         widget.cpp
 
@@ -46,6 +48,8 @@ HEADERS += \
         pagewidget.h \
         richtextfont.h \
         sendarticedialog.h \
+        showdatetime.h \
+        showscoretable.h \
         util.h \
         widget.h
 

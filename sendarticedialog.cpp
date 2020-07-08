@@ -18,9 +18,6 @@ void SendArticeDialog::setup()
     articleSize = -1;
     spinValue = 0;
 
-    filePath = qApp->applicationDirPath() + "/" + ARTICLE_DIR_FILE; // 跟打文章目录的绝对路径
-
-
     setupUi();
     setupArticleList();
 
@@ -46,8 +43,9 @@ void SendArticeDialog::setupArticleList()
 
     fileList->addItem(new QListWidgetItem("剪贴板", fileList));
 
-    // 放到 目录里的文件
-    QStringList files = Util::getFileNames(filePath);
+    putFileDir = qApp->applicationDirPath() + "/" + ARTICLE_DIR_FILE;
+    Util::checkDirExist(putFileDir);
+    QStringList files = Util::getFileNames(putFileDir);
     for (auto f: files) {
         auto a = new Article(f, 0);
         articles.push_back(a);
@@ -114,29 +112,40 @@ void SendArticeDialog::listItemClicked(QListWidgetItem *item)
     Article *a;
     QString fileSize = "";
     QString fileName = item->text();
+    bool sendBtnStatus = false;
 
     if (selectIndex == 0) {
         content = Util::getClipboardContent();
         articleSize = content.size();
         fileSize = "";
+        articleName = "剪贴板里的内容";
+        sendBtnStatus = true;
     } else if (selectIndex < splitIndex) {
         a = articles.at(selectIndex - 1);
         content = a->content;
         articleSize = a->wordSize;
         fileSize = a->fileSize;
+        articleName = a->name;
+        sendBtnStatus = true;
     } else if (selectIndex == splitIndex) {
         content = "下面的文章为本地文章";
         articleSize = content.size();
         fileSize = "";
+        sendBtnStatus = false;
+//        sendFileBtn->setEnabled(false);
+//        articleName = "";
     } else if (selectIndex > splitIndex) {
         int index = selectIndex - splitIndex - 1;
         a = localArticles[index];
         content = a->content;
         articleSize = a->wordSize;
         fileSize = a->fileSize;
+        articleName = a->name;
+        sendBtnStatus = true;
     }
 
     textEdit->setText(content);
+    sendFileBtn->setEnabled(sendBtnStatus);
     wordSizeLabel->setText(QString("%1字").arg(articleSize));
     setWindowTitle(QString("%1--%2").arg(fileName).arg(fileSize));
 }

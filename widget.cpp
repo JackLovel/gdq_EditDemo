@@ -16,6 +16,12 @@ Widget::Widget(QWidget *parent) :
 
     setup();
     debug();
+
+    showDateTime = new ShowDateTime(this);
+    showDateTime->setLab(ui->labelTime);
+
+    showScoreTable = new ShowScoreTable(this);
+    showScoreTable->setTable(ui->tableWidget);
 }
 
 Widget::~Widget()
@@ -39,14 +45,9 @@ void Widget::setup()
 
     timer = new QTimer;
     baseTime = *new QTime;
-    recordTime = 0;
-    canTimer = false;
-    timeEnable = false;
-    timeThread = new QThread();
-    timer->moveToThread(timeThread);
-    timer->setInterval(1);
-    connect(timeThread, SIGNAL(started()), timer, SLOT(start()));
-    connect(timer, &QTimer::timeout, this, &Widget::updateDisplay);
+//    recordTime = 0;
+//    canTimer = false;
+//    timeEnable = false;
 
     // 打开时的提示信息
     QString content = OPEN_PROMPT;
@@ -125,7 +126,8 @@ void Widget::setup()
             SLOT(getSendDialog(QString, int, QString, int)));
 
     connect(ui->textEditInput, &QTextEdit::cursorPositionChanged, this, &Widget::LogInput);
-    connect(ui->textEditInput, &QTextEdit::textChanged, this, &Widget::startTimeSlot);
+    connect(ui->textEditInput, &QTextEdit::textChanged,this,&Widget::startTimeSlot);
+
     ui->textEdit->setReadOnly(true);
     ui->textEditInput->setFocus();
     ui->lineEditArticleTitle->setText(artileName);
@@ -137,24 +139,24 @@ void Widget::setup()
 
 
     // 跟打结果显示图表
-    QStandardItemModel  *model = new QStandardItemModel();
+//    QStandardItemModel  *model = new QStandardItemModel();
 
-    model->setColumnCount(2);
-    model->setHeaderData(0,Qt::Horizontal,"速度");
-    model->setHeaderData(1,Qt::Horizontal,"击键");
+//    model->setColumnCount(2);
+//    model->setHeaderData(0,Qt::Horizontal,"速度");
+//    model->setHeaderData(1,Qt::Horizontal,"击键");
 
-    model->setItem(0, 0, new QStandardItem("90.0"));
-    model->setItem(0, 1, new QStandardItem("33"));
+//    model->setItem(0, 0, new QStandardItem("90.0"));
+//    model->setItem(0, 1, new QStandardItem("33"));
 
-    model->item(0, 0)->setTextAlignment(Qt::AlignCenter);
-    model->item(0, 1)->setTextAlignment(Qt::AlignCenter);
+//    model->item(0, 0)->setTextAlignment(Qt::AlignCenter);
+//    model->item(0, 1)->setTextAlignment(Qt::AlignCenter);
 
-    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tableView->setModel(model);
-    ui->tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    ui->tableView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    ui->tableView->horizontalHeader()->setMinimumSectionSize(100);
+//    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+//    ui->tableView->setModel(model);
+//    ui->tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
+//    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+//    ui->tableView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+//    ui->tableView->horizontalHeader()->setMinimumSectionSize(100);
 }
 
 void Widget::debug() {
@@ -186,7 +188,7 @@ void Widget::setDisplayContent(QVector<RichTextFont*> fonts) {
 
 void Widget::LogInput()
 {
-    canTimer = true;
+//    canTimer = true;
 
     QString content = ui->textEditInput->toPlainText();
     qint32 wordSize = content.size();
@@ -202,21 +204,13 @@ void Widget::LogInput()
     int numberLimit = displayContent.size() - 2; // 排除两端的为空
 
     if (wordSize >= numberLimit) {
-        timer->stop();
+        showDateTime->stop();
         ui->textEditInput->setReadOnly(true);
     }
     checkSpell(content);
     setDisplayContent(fonts);
     storeIndex = index;
     clearInputAction->setEnabled(true);
-}
-
-void Widget::recordTimeSlot()
-{
-    if (canTimer) {
-        ++recordTime;
-        ui->labelTime->setText(QString("%1秒").arg(recordTime));
-    }
 }
 
 void Widget::getSendDialog(QString content, int value, QString name, int articleSize)
@@ -248,6 +242,7 @@ void Widget::getSendDialog(QString content, int value, QString name, int article
 
     QString path = qApp->applicationDirPath() + "/" + ARTICLE_DIR_FILE + "/" + artileName;
     Util::writeSetting(artileName, path + ".txt");
+//    showDateTime->clear();
 }
 
 void Widget::getNextParagraph() {
@@ -256,9 +251,9 @@ void Widget::getNextParagraph() {
     revisionCount = 0;
     ui->labelRevisionCount->setText(QString("%1").arg(revisionCount));
     // 时间
-    recordTime = 0;
-    ui->labelTime->setText(QString("%1秒").arg(recordTime));
-
+//    recordTime = 0;
+//    ui->labelTime->setText(QString("%1秒").arg(recordTime));
+    showDateTime->clear();
     ++currentParagraphIndex;
     if (currentParagraphIndex >= totalParagraphIndex - 1) {
         currentParagraphIndex = totalParagraphIndex - 1;
@@ -402,22 +397,8 @@ void Widget::loadRectFile()
     }
 }
 
-void Widget::updateDisplay()
-{
-    QTime c = QTime::currentTime();
-    int t = baseTime.msecsTo(c);
-    QTime showTime(0,0,0,0);
-    showTime = showTime.addMSecs(t);
-    QString timeStr = showTime.toString("hh:mm:ss:zzz");
-    ui->labelTime->setText(timeStr);
-}
-
 void Widget::startTimeSlot()
 {
-    if (!timeEnable) {
-        baseTime = baseTime.currentTime();
-        timeThread->start();
-        timeEnable = !timeEnable;
-    }
+    showDateTime->start(1000);
 }
 
